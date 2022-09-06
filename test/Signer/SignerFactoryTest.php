@@ -11,8 +11,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 /**
- * @covers \Dkim\Signer\SignerFactory
  * @uses \Dkim\Signer\Signer
+ *
+ * @covers \Dkim\Signer\SignerFactory
  */
 final class SignerFactoryTest extends TestCase
 {
@@ -37,7 +38,7 @@ final class SignerFactoryTest extends TestCase
             ->willReturn(['dkim' => []]);
 
         $factory = new SignerFactory();
-        $actual = $factory($container, Signer::class);
+        $actual  = $factory($container, Signer::class);
         self::assertInstanceOf(Signer::class, $actual);
     }
 }

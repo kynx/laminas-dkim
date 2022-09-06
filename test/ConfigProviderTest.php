@@ -28,7 +28,7 @@ final class ConfigProviderTest extends TestCase
         ];
 
         $configProvider = new ConfigProvider();
-        $actual = $configProvider();
+        $actual         = $configProvider();
         self::assertSame($expected, $actual);
     }
 }

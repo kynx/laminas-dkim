@@ -30,14 +30,14 @@ final class DkimTest extends TestCase
     public function testFromStringParsesHeader(): void
     {
         $header = 'DKIM-Signature: ' . self::DKIM;
-        $dkim = Dkim::fromString($header);
+        $dkim   = Dkim::fromString($header);
         self::assertSame(self::DKIM, $dkim->getFieldValue());
     }
 
     public function testGetFieldName(): void
     {
         $expected = 'DKIM-Signature';
-        $dkim = new Dkim('');
+        $dkim     = new Dkim('');
         self::assertSame($expected, $dkim->getFieldName());
     }
 
@@ -51,7 +51,7 @@ final class DkimTest extends TestCase
     public function testToString(): void
     {
         $expected = 'DKIM-Signature: ' . self::DKIM;
-        $dkim = new Dkim(self::DKIM);
+        $dkim     = new Dkim(self::DKIM);
         self::assertSame($expected, $dkim->toString());
     }
 }

@@ -47,12 +47,12 @@ final class SignerIntegrationTest extends TestCase
             '',
             file_get_contents(__DIR__ . '/../assets/private_key.pem')
         ));
-        $this->params = [
+        $this->params     = [
             'd' => 'example.com',
             'h' => 'from:to:subject',
             's' => '202209',
         ];
-        $this->signer = new Signer(['private_key' => $this->privateKey, 'params' => $this->params]);
+        $this->signer     = new Signer(['private_key' => $this->privateKey, 'params' => $this->params]);
     }
 
     public function testSignMessageIsValid(): void
@@ -138,7 +138,7 @@ final class SignerIntegrationTest extends TestCase
     public static function assertSignedMessageIsValid(Message $message): void
     {
         $validator = new Validator($message->toString());
-        $actual = $validator->validateBoolean();
+        $actual    = $validator->validateBoolean();
         self::assertTrue($actual);
     }
 }

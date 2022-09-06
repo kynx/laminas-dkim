@@ -15,6 +15,7 @@ use function explode;
 use function hash;
 use function in_array;
 use function is_array;
+use function is_resource;
 use function openssl_pkey_get_private;
 use function openssl_sign;
 use function pack;
