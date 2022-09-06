@@ -263,12 +263,13 @@ PKEY;
      */
     private function generateSignature(): string
     {
-        if (! $this->getPrivateKey()) {
+        $privateKey = $this->getPrivateKey();
+        if (! is_resource($privateKey)) {
             throw new Exception('No private key given.');
         }
 
         $signature = '';
-        openssl_sign($this->getCanonizedHeaders(), $signature, $this->getPrivateKey(), OPENSSL_ALGO_SHA256);
+        openssl_sign($this->getCanonizedHeaders(), $signature, $privateKey, OPENSSL_ALGO_SHA256);
 
         return trim(chunk_split(base64_encode($signature), 73, ' '));
     }
