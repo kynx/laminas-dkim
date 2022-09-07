@@ -8,7 +8,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @see \KynxTest\Laminas\Dkim\Signer\SignerFactoryTest
  */
-class SignerFactory
+final class SignerFactory
 {
     public function __invoke(ContainerInterface $container): Signer
     {

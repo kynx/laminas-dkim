@@ -11,10 +11,9 @@ use function strtolower;
 /**
  * @see \KynxTest\Laminas\Dkim\Header\DkimTest
  */
-class Dkim implements HeaderInterface
+final class Dkim implements HeaderInterface
 {
-    /** @var string */
-    protected $value;
+    private string $value;
 
     /**
      * @param string $headerLine
@@ -30,7 +29,7 @@ class Dkim implements HeaderInterface
             throw new InvalidArgumentException('Invalid header line for DKIM-Signature string');
         }
 
-        return new static($value);
+        return new self($value);
     }
 
     public function __construct(string $value)

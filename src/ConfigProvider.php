@@ -8,7 +8,7 @@ use Kynx\Laminas\Dkim\Signer\SignerFactory;
 /**
  * @see \KynxTest\Laminas\Dkim\ConfigProviderTest
  */
-class ConfigProvider
+final class ConfigProvider
 {
     /**
      * Retrieve Dkim default configuration.

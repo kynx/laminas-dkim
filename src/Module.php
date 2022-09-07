@@ -5,7 +5,7 @@ namespace Kynx\Laminas\Dkim;
 /**
  * @see \KynxTest\Laminas\Dkim\ModuleTest
  */
-class Module
+final class Module
 {
     public function getConfig(): array
     {
