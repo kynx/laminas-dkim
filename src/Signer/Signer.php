@@ -7,6 +7,7 @@ use Kynx\Laminas\Dkim\Header\Dkim;
 use Laminas\Mail\Header;
 use Laminas\Mail\Message;
 use Laminas\Mime\Message as MimeMessage;
+use OpenSSLAsymmetricKey;
 
 use function array_key_exists;
 use function base64_encode;
@@ -252,13 +253,13 @@ PKEY;
     /**
      * Generate signature.
      *
-     * @throws Exception
+     * @throws InvalidPrivateKeyException
      */
     private function generateSignature(): string
     {
         $privateKey = $this->getPrivateKey();
-        if (! is_resource($privateKey)) {
-            throw new Exception('No private key given.');
+        if (! (is_resource($privateKey) || $privateKey instanceof OpenSSLAsymmetricKey)) {
+            throw new InvalidPrivateKeyException('No private key given.');
         }
 
         $signature = '';
@@ -362,7 +363,7 @@ PKEY;
     /**
      * Return OpenSSL key resource.
      *
-     * @return bool|resource key
+     * @return bool|resource|OpenSSLAsymmetricKey
      */
     private function getPrivateKey()
     {
