@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace DkimTest\Signer;
+namespace KynxTest\Laminas\Dkim\Signer;
 
-use Dkim\Header\Dkim;
-use Dkim\Signer\Signer;
 use Exception;
+use Kynx\Laminas\Dkim\Header\Dkim;
+use Kynx\Laminas\Dkim\Signer\Signer;
 use Laminas\Mail\Message;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Part;
@@ -18,9 +18,9 @@ use function str_replace;
 use function trim;
 
 /**
- * @uses \Dkim\Header\Dkim
+ * @uses \Kynx\Laminas\Dkim\Header\Dkim
  *
- * @covers \Dkim\Signer\Signer
+ * @covers \Kynx\Laminas\Dkim\Signer\Signer
  */
 final class SignerTest extends TestCase
 {

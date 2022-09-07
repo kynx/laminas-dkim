@@ -48,12 +48,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Dkim\\": "src/"
+            "Kynx\\Laminas\\Dkim\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "DkimTest\\": "test/"
+            "KynxTest\\Laminas\\Dkim\\": "test/"
         },
         "files": [
             "test/Mock/dns_get_record.php"

@@ -1,9 +1,9 @@
 <?php
 
-namespace Dkim\Signer;
+namespace Kynx\Laminas\Dkim\Signer;
 
-use Dkim\Header\Dkim;
 use Exception;
+use Kynx\Laminas\Dkim\Header\Dkim;
 use Laminas\Mail\Header;
 use Laminas\Mail\Message;
 use Laminas\Mime\Message as MimeMessage;
@@ -27,7 +27,7 @@ use function trim;
 use const OPENSSL_ALGO_SHA256;
 
 /**
- * @see \DkimTest\Signer\SignerTest
+ * @see \KynxTest\Laminas\Dkim\Signer\SignerTest
  */
 class Signer
 {

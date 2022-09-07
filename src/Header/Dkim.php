@@ -1,6 +1,6 @@
 <?php
 
-namespace Dkim\Header;
+namespace Kynx\Laminas\Dkim\Header;
 
 use Laminas\Mail\Header\Exception\InvalidArgumentException;
 use Laminas\Mail\Header\GenericHeader;
@@ -9,7 +9,7 @@ use Laminas\Mail\Header\HeaderInterface;
 use function strtolower;
 
 /**
- * @see \DkimTest\Header\DkimTest
+ * @see \KynxTest\Laminas\Dkim\Header\DkimTest
  */
 class Dkim implements HeaderInterface
 {

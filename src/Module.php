@@ -1,9 +1,9 @@
 <?php
 
-namespace Dkim;
+namespace Kynx\Laminas\Dkim;
 
 /**
- * @see \DkimTest\ModuleTest
+ * @see \KynxTest\Laminas\Dkim\ModuleTest
  */
 class Module
 {

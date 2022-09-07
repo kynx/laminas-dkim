@@ -1,12 +1,12 @@
 <?php
 
-namespace Dkim;
+namespace Kynx\Laminas\Dkim;
 
-use Dkim\Signer\Signer;
-use Dkim\Signer\SignerFactory;
+use Kynx\Laminas\Dkim\Signer\Signer;
+use Kynx\Laminas\Dkim\Signer\SignerFactory;
 
 /**
- * @see \DkimTest\ConfigProviderTest
+ * @see \KynxTest\Laminas\Dkim\ConfigProviderTest
  */
 class ConfigProvider
 {

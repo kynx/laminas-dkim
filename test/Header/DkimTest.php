@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace DkimTest\Header;
+namespace KynxTest\Laminas\Dkim\Header;
 
-use Dkim\Header\Dkim;
+use Kynx\Laminas\Dkim\Header\Dkim;
 use Laminas\Mail\Header\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Dkim\Header\Dkim
+ * @covers \Kynx\Laminas\Dkim\Header\Dkim
  */
 final class DkimTest extends TestCase
 {
@@ -43,8 +43,8 @@ final class DkimTest extends TestCase
 
     public function testSetEncodingHasNoEffect(): void
     {
-        $dkim = new Dkim('');
-        $dkim->setEncoding('UTF-8');
+        $dkim = (new Dkim(''))
+            ->setEncoding('UTF-8');
         self::assertSame('ASCII', $dkim->getEncoding());
     }
 
