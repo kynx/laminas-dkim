@@ -2,7 +2,10 @@
 
 namespace Kynx\Laminas\Dkim\Signer;
 
-use Exception;
+use Kynx\Laminas\Dkim\Exception\ExceptionInterface;
+use Kynx\Laminas\Dkim\Exception\InvalidParamException;
+use Kynx\Laminas\Dkim\Exception\InvalidPrivateKeyException;
+use Kynx\Laminas\Dkim\Exception\MissingParamException;
 use Kynx\Laminas\Dkim\Header\Dkim;
 use Laminas\Mail\Header;
 use Laminas\Mail\Message;
@@ -59,14 +62,14 @@ final class Signer
     /**
      * The private key being used.
      *
-     * @var bool|resource key
+     * @var bool|resource|OpenSSLAsymmetricKey key
      */
     private $privateKey = false;
 
     /**
      * Set and validate DKIM options.
      *
-     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function __construct(array $config)
     {
@@ -105,12 +108,12 @@ final class Signer
     /**
      * Set Dkim param.
      *
-     * @throws Exception
+     * @throws InvalidParamException
      */
     public function setParam(string $key, string $value): self
     {
         if (! array_key_exists($key, $this->getParams())) {
-            throw new Exception("Invalid param '$key' given.");
+            throw new InvalidParamException("Invalid param '$key' given.");
         }
 
         $this->params[$key] = $value;
@@ -135,7 +138,7 @@ final class Signer
     /**
      * Set (generate) OpenSSL key.
      *
-     * @throws Exception
+     * @throws InvalidPrivateKeyException
      */
     public function setPrivateKey(string $privateKey): self
     {
@@ -148,7 +151,7 @@ PKEY;
         $key = @openssl_pkey_get_private($key);
 
         if (! $key) {
-            throw new Exception("Invalid private key given.");
+            throw new InvalidPrivateKeyException("Invalid private key given.");
         }
 
         $this->privateKey = $key;
@@ -215,7 +218,7 @@ PKEY;
     /**
      * Generate empty DKIM header.
      *
-     * @throws Exception
+     * @throws MissingParamException
      */
     private function generateEmptyDkimHeader(Message $message): self
     {
@@ -224,7 +227,7 @@ PKEY;
 
         // check if the required params are set for singing.
         if (empty($configurableParams['d']) || empty($configurableParams['h']) || empty($configurableParams['s'])) {
-            throw new Exception('Unable to sign message: missing params');
+            throw new MissingParamException('Unable to sign message: missing params');
         }
 
         // final params
