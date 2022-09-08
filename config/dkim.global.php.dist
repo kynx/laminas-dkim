@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
+/**
+ * Copy this file to `config/autoload/dkim.global.php` in your project root
+ *
+ * @see https://www.rfc-editor.org/rfc/rfc6376#section-5.4 for advice on choosing headers to sign
+ */
 return [
     'dkim' => [
         'params' => [
-            'd' => 'example.com', // domain
-            'h' => 'from:to:subject', // headers to sign
-            's' => 'k1', // domain key selector
-        ]
-    ]
+            'domain'   => 'example.com',
+            'headers'  => ['Date', 'From', 'Reply-To', 'Sender', 'Subject'],
+        ],
+    ],
 ];

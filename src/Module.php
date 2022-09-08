@@ -12,6 +12,7 @@ final class Module
         $provider = new ConfigProvider();
 
         return [
+            'dkim'            => $provider->getDkimConfig(),
             'service_manager' => $provider->getDependencyConfig(),
         ];
     }

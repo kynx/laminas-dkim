@@ -18,7 +18,19 @@ final class ConfigProvider
     public function __invoke()
     {
         return [
+            'dkim'         => $this->getDkimConfig(),
             'dependencies' => $this->getDependencyConfig(),
+        ];
+    }
+
+    public function getDkimConfig(): array
+    {
+        return [
+            'params' => [
+                'domain'           => '', // _must_ be set in config.local.php
+                'canonicalization' => 'relaxed/simple',
+                'identifier'       => '',
+            ],
         ];
     }
 
