@@ -240,4 +240,22 @@ final class SignerTest extends TestCase
         self::expectExceptionMessage('No private key given.');
         $signer->signMessage($this->message);
     }
+
+    public function testSignMultipleMessages(): void
+    {
+        $signer = new Signer(['private_key' => $this->privateKey, 'params' => $this->params]);
+        $first = clone $this->message;
+        $second = clone $this->message;
+
+        $signer->signMessage($first);
+        $header = $first->getHeaders()->get('dkim-signature');
+        self::assertInstanceOf(Dkim::class, $header);
+        self::assertSame(self::DEFALT_DKIM, $header->getFieldValue());
+
+
+        $signer->signMessage($second);
+        $header = $second->getHeaders()->get('dkim-signature');
+        self::assertInstanceOf(Dkim::class, $header);
+        self::assertSame(self::DEFALT_DKIM, $header->getFieldValue());
+    }
 }
