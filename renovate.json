@@ -1,0 +1,33 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Default configuration for repositories in the Laminas organisation",
+  "extends": [
+    ":dependencyDashboard",
+    ":ignoreModulesAndTests",
+    ":automergeMinor",
+    ":automergeBranch",
+    ":prNotPending",
+    ":rebaseStalePrs",
+    ":semanticCommitsDisabled",
+    ":separateMajorReleases",
+    ":combinePatchMinorReleases",
+    ":enableVulnerabilityAlerts",
+    ":timezone(UTC)",
+    ":gitSignOff",
+    ":label(renovate)",
+    "group:allNonMajor"
+  ],
+  "commitBodyTable": true,
+  "enabledManagers": ["composer", "dockerfile", "docker-compose", "github-actions"],
+  "lockFileMaintenance": {"enabled": true, "extends": ["schedule:daily"]},
+  "platformAutomerge": true,
+  "prFooter": "[Read more information](https://github.com/laminas/.github/blob/main/RENOVATE.md) about the use of [Renovate Bot](https://github.com/renovatebot/renovate) within Laminas.",
+  "rangeStrategy": "replace",
+  "rollbackPrs": true,
+  "packageRules": [
+    {"matchDepTypes": ["require"], "rangeStrategy": "widen"},
+  ],
+  "vulnerabilityAlerts": {
+    "rangeStrategy": "bump"
+  }
+}
