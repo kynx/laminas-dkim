@@ -206,11 +206,11 @@ PKEY;
 
             if ($header instanceof Header\HeaderInterface) {
                 $this->appendCanonizedHeader(
-                    $fieldName . ':' . preg_replace(
+                    $fieldName . ':' . trim(preg_replace(
                         '/\s+/',
                         ' ',
                         $header->getFieldValue(Header\HeaderInterface::FORMAT_ENCODED)
-                    ) . "\r\n"
+                    )) . "\r\n"
                 );
             }
         }

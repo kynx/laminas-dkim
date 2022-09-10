@@ -26,7 +26,7 @@ class Dkim implements HeaderInterface
         [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
-        if (strtolower($name) !== 'dkimsignature') {
+        if (strtolower($name) !== 'dkim-signature') {
             throw new InvalidArgumentException('Invalid header line for DKIM-Signature string');
         }
 
