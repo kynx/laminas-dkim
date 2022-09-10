@@ -3,15 +3,14 @@
 namespace Dkim\Signer;
 
 use Exception;
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * @see \DkimTest\Signer\SignerFactoryTest
  */
-class SignerFactory implements FactoryInterface
+class SignerFactory
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Signer
+    public function __invoke(ContainerInterface $container): Signer
     {
         $config = $container->get('config');
 
