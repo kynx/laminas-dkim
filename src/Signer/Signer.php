@@ -238,7 +238,7 @@ PKEY;
             'v'  => $configurableParams['v'],
             'a'  => $configurableParams['a'],
             'bh' => $this->getBodyHash($message),
-            'c'  => 'relaxed',
+            'c'  => 'relaxed/simple',
             'd'  => $configurableParams['d'],
             'h'  => $configurableParams['h'],
             's'  => $configurableParams['s'],

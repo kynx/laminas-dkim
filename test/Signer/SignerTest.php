@@ -23,7 +23,7 @@ use function str_replace;
 final class SignerTest extends TestCase
 {
     // phpcs:disable Generic.Files.LineLength.TooLong
-    private const DEFALT_DKIM = 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed; d=example.com; h=from:to:subject; s=202209; b=ZIveNTJs3JUE1s2P3DO/wIyftb+bQLDiv7uWXwwMs96r3SaLAbYs2UOF0t/RGPTz+YgeNMHL6 2LE0DeuegAOm2K7qzbsW2pi6b4nCAK9UnN0NDTLlW4vSEI512/MHK50qbe/EhK9dNX6phwBhT DCanUuZ0GADddCX7k7uw3vf6g=';
+    private const DEFALT_DKIM = 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/simple; d=example.com; h=from:to:subject; s=202209; b=TpDEopkzCtJzchi1ZoXG1jg3aPNFEA0/WSfW6ysfJtBbjge1YuKacxRe/873WCN/3VdhU8hBZ 1+ZnoYWzJIAO3LHNooA66AU/Jq0ghiJcHONBU50IZdccvPoy8e0180pMLwJtYDF7KQUo65vkk PHIYClotwT29OjxFUdMl1mTEY=';
     // phpcs:enable
 
     /** @var Message */
@@ -83,9 +83,9 @@ final class SignerTest extends TestCase
     {
         return [
             // phpcs:disable Generic.Files.LineLength.TooLong
-            'domain'   => ['d', 'example.org', 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed; d=example.org; h=from:to:subject; s=202209; b=bUVWqeZYk051s8cYgnbs63IwnLQhZkmnrHpaPaRNLZigfMbp9aFTimzJNjD3y8tefA3avESWF XCCDPr4kYDxBOHnA+OlWWqKExjZMqww7Kwu1cpeEDYFlt2FNGnBSFwSPtVcrxRMsGSLjXo0IR YY+zLsD0fjwfrdu6BJbtN0Gug='],
-            'headers'  => ['h', 'from:to:cc', 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed; d=example.com; h=from:to:cc; s=202209; b=CfZoSx4/4934tkPbdGty5Jtx0FMMRyAAfUpSFkVWJr/cKBE9m3Qc+0Biofpr8IJwbEsm0ZKi+ pf0UMIUf0Ex1i5a8eap/6IOGNG1pOTYLa76C7HriCBCcUlqByZP5ZyIS/53kPXNzdSq99zGZb S/hp7sEu9jUMtwuP+ox1ta/rM='],
-            'selector' => ['s', 'foo', 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed; d=example.com; h=from:to:subject; s=foo; b=MPILDWMo+yuZKtMUgPymmxADwChhycfezMZcOWyjZuloRp06Osmc/5Ah7Yo14G47OzwvLskeE gIvmUxWo5oryMQmiPhtDHDXTlCoFRIY2eqwgZjHt//E2cXXNwH6VLyeKEikEfgzkddcj85x0u nKmILo8UDQitFkl+yYq1HIJj0='],
+            'domain'   => ['d', 'example.org', 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/simple; d=example.org; h=from:to:subject; s=202209; b=jZlbMcYSrFH70zxi1Z9/EIX/B+VA54GZ9BFaMofx7P/mqcQFxaZ7pPwRwyLMHCXjfQC3whsXC OI4YkbG/n3l7g+V9L4BCyJ4ANBO9ZOCYeujXPmxp9J/p13No/O2TmAjJITEKRY7PkGu8fAOmG /czQYxvPZk8+taAc431L2EDkQ='],
+            'headers'  => ['h', 'from:to:cc', 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/simple; d=example.com; h=from:to:cc; s=202209; b=lKFpHlViWca4UVRYOyVhvLyjqoPH1XkWbIp7Pkw/wpRdb9c+hmix2uJludOQyXQyB39JGaQQe HJH7LxH7Q48nO83nxlh52RrNNScwX+5O+N16n+yjp7Dg7feidPrVluQUqvYcR9pUHGPm2cD5N XnUFqHWRAX98CuxjDHTWX+kGo='],
+            'selector' => ['s', 'foo', 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/simple; d=example.com; h=from:to:subject; s=foo; b=XV496nVuq62XEpZ7G/DxJiPy30uyTvFgcsrfaHmHsTImgdVjuAHvMl0yDBW23Vpd2Eksll1qd seRHxFa8V5OLHteElZELoz4HqA0jGo3sGqTNjoLzeZodAdiZ/VHJcdU5ZKeB/qJDyonQhN4Wr z2eWmRIWdFPY5Ex9olzPVtrBw='],
             // phpcs:enable
         ];
     }
@@ -142,7 +142,7 @@ final class SignerTest extends TestCase
     public function testSignMessageHandlesMimeMessage(): void
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
-        $expected = 'v=1; a=rsa-sha256; bh=yGIXoM91E1DiKjvCBcC8NlWyw54TdfMQ08sdtwtOO4I=; c=relaxed; d=example.com; h=from:to:subject; s=202209; b=TqQ6vRv/tQzalihYo38Um9CYdVavndOX+TQLvw5Da13bLxVWaz4aRmtYmwA1J/BSuJmejssPL oFxTxoh1ThPuTZmgh6HYbS6sdVXULIO5l0Yt8Jn9OGUWJ6+Pe9rf1Nd2kEtfZgasRXpWvL+xJ OQH3g12uTwdAKSCDelD7QEHek=';
+        $expected = 'v=1; a=rsa-sha256; bh=yGIXoM91E1DiKjvCBcC8NlWyw54TdfMQ08sdtwtOO4I=; c=relaxed/simple; d=example.com; h=from:to:subject; s=202209; b=k5ndIRQ0AJNEFtycHqN0FBye3WCyxHsy7vGITgMW7LyTL2fOhYXHdJhu7y2yK5CciuJ4Dd6Hy 7S+13U87VcYEc2b3fXOafH+lIGLsvlZPWMKBe8rkHuzdWehPeL6SnhhOWXStVOb8RyqbGZTTq poAUw/SFt8W3eI66y9nWFYMHs=';
         // phpcs:enable
         $mime = new MimeMessage();
         $mime->addPart(new Part("Hello world"));
@@ -180,7 +180,7 @@ final class SignerTest extends TestCase
     public function testSignMessageAddsCrLfToEmptyBody(): void
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
-        $expected = 'v=1; a=rsa-sha256; bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=; c=relaxed; d=example.com; h=from:to:subject; s=202209; b=iZ80xj9GbrxFqTJxijRYYTVolk9Y7zI+96NBJmn+tJ5e7uDXX0BNEcih2buMBB71d3/KTYQg3 nhZJvCzHbFX1ASvShjoW2fo+IRNKTbsarYPUBQAN7+E1idMKbdmWRrbRA+ZsVrCRqfQB5XE+/ s6xWuek5Fb3XAprsoEhCWXgU8=';
+        $expected = 'v=1; a=rsa-sha256; bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=; c=relaxed/simple; d=example.com; h=from:to:subject; s=202209; b=CysxP633CzFFVJrNB0euqonA993c+cbSobhf+cdCAEwTgDbkQT7LUfU2opIMUf4H59T8Kx7PC MaaNgnrXbIE7sI3PvaM5nXtiGxCon6vjMLqRGl/bvoNycksDYETfCxAiQPoDBMRmGaccDsD1d d8AC2bZX6qTB8GXl6OCH2jvRA=';
         // phpcs:enable
         $this->message->setBody("");
 
@@ -217,7 +217,7 @@ final class SignerTest extends TestCase
     public function testSignMessagesCanonicalizesFoldedHeader(): void
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
-        $expected = 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed; d=example.com; h=from:to:subject; s=202209; b=lBekusV7wbwMhkeS8CI6YvtIe8nLP6KmI7vjtobXWc3o69wq21tiPJfiliNp46oQZSf33CTnb l1MDI3nSzAfJNBGga/sZIhzjGXFRzfozGPCIPSiwRskX5+pQrKEMYNsPS5Uu3ZPhmtyDKrHsW EbBgo37MwR38emFM5NNCfynEo=';
+        $expected = 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/simple; d=example.com; h=from:to:subject; s=202209; b=ltIZz2CnS0EXyfNfjbCLZx58um55Uq2SvHUj3VCBrF/MH5CVRQQy7/CxcL260k6ddodOaRKjw QLW9kRWD/CuXz9AWpjYQbDg5qPNVsFHcNzKPJHIbytpYktC6e55nealcY/qpK7mcociop3S/S xzPHrhJtKI8ZaqQLFd+0x2P6s=';
         // phpcs:enable
 
         // 80-char subject will be wrapped at 70 chars
