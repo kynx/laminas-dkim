@@ -25,11 +25,11 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         },
         "platform": {
-            "php": "7.2.99"
+            "php": "7.4.99"
         }
     },
     "require": {
-        "php": "^7.2",
+        "php": "^7.4",
         "ext-openssl": "*",
         "laminas/laminas-mail": "^2.0"
     },
