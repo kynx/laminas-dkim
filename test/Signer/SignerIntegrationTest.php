@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DkimTest\Signer;
+namespace KynxTest\Laminas\Dkim\Signer;
 
-use Dkim\Signer\Signer;
+use Kynx\Laminas\Dkim\Signer\Signer;
 use Laminas\Mail\Message;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Part;

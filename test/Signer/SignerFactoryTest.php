@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace DkimTest\Signer;
+namespace KynxTest\Laminas\Dkim\Signer;
 
-use Dkim\Signer\Signer;
-use Dkim\Signer\SignerFactory;
 use Exception;
+use Kynx\Laminas\Dkim\Signer\Signer;
+use Kynx\Laminas\Dkim\Signer\SignerFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
 /**
- * @uses \Dkim\Signer\Signer
+ * @uses \Kynx\Laminas\Dkim\Signer\Signer
  *
- * @covers \Dkim\Signer\SignerFactory
+ * @covers \Kynx\Laminas\Dkim\Signer\SignerFactory
  */
 final class SignerFactoryTest extends TestCase
 {

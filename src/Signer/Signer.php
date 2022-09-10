@@ -1,9 +1,9 @@
 <?php
 
-namespace Dkim\Signer;
+namespace Kynx\Laminas\Dkim\Signer;
 
-use Dkim\Header\Dkim;
 use Exception;
+use Kynx\Laminas\Dkim\Header\Dkim;
 use Laminas\Mail\Header;
 use Laminas\Mail\Message;
 use Laminas\Mime\Message as MimeMessage;
@@ -27,16 +27,14 @@ use function trim;
 use const OPENSSL_ALGO_SHA256;
 
 /**
- * @see \DkimTest\Signer\SignerTest
+ * @see \KynxTest\Laminas\Dkim\Signer\SignerTest
  */
-class Signer
+final class Signer
 {
     /**
      * All configurable params.
-     *
-     * @var array
      */
-    private $params = [
+    private array $params = [
         // optional params having a default value set
         'v' => '1',
         'a' => 'rsa-sha256',
@@ -49,17 +47,13 @@ class Signer
 
     /**
      * Empty DKIM header.
-     *
-     * @var Dkim
      */
-    private $emptyDkimHeader;
+    private Dkim $emptyDkimHeader;
 
     /**
      * Canonized headers.
-     *
-     * @var string
      */
-    private $canonizedHeaders;
+    private string $canonizedHeaders = '';
 
     /**
      * The private key being used.
@@ -110,11 +104,9 @@ class Signer
     /**
      * Set Dkim param.
      *
-     * @param string $key
-     * @param string $value
      * @throws Exception
      */
-    public function setParam($key, $value): self
+    public function setParam(string $key, string $value): self
     {
         if (! array_key_exists($key, $this->getParams())) {
             throw new Exception("Invalid param '$key' given.");

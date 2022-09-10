@@ -1,6 +1,6 @@
 <?php
 
-namespace Dkim\Header;
+namespace Kynx\Laminas\Dkim\Header;
 
 use Laminas\Mail\Header\Exception\InvalidArgumentException;
 use Laminas\Mail\Header\GenericHeader;
@@ -9,12 +9,11 @@ use Laminas\Mail\Header\HeaderInterface;
 use function strtolower;
 
 /**
- * @see \DkimTest\Header\DkimTest
+ * @see \KynxTest\Laminas\Dkim\Header\DkimTest
  */
-class Dkim implements HeaderInterface
+final class Dkim implements HeaderInterface
 {
-    /** @var string */
-    protected $value;
+    private string $value;
 
     /**
      * @param string $headerLine
@@ -30,7 +29,7 @@ class Dkim implements HeaderInterface
             throw new InvalidArgumentException('Invalid header line for DKIM-Signature string');
         }
 
-        return new static($value);
+        return new self($value);
     }
 
     public function __construct(string $value)

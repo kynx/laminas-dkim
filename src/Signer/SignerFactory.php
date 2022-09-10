@@ -1,14 +1,14 @@
 <?php
 
-namespace Dkim\Signer;
+namespace Kynx\Laminas\Dkim\Signer;
 
 use Exception;
 use Psr\Container\ContainerInterface;
 
 /**
- * @see \DkimTest\Signer\SignerFactoryTest
+ * @see \KynxTest\Laminas\Dkim\Signer\SignerFactoryTest
  */
-class SignerFactory
+final class SignerFactory
 {
     public function __invoke(ContainerInterface $container): Signer
     {

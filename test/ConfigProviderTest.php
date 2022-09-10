@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace DkimTest;
+namespace KynxTest\Laminas\Dkim;
 
-use Dkim\ConfigProvider;
-use Dkim\Signer\Signer;
-use Dkim\Signer\SignerFactory;
+use Kynx\Laminas\Dkim\ConfigProvider;
+use Kynx\Laminas\Dkim\Signer\Signer;
+use Kynx\Laminas\Dkim\Signer\SignerFactory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Dkim\ConfigProvider
+ * @covers \Kynx\Laminas\Dkim\ConfigProvider
  */
 final class ConfigProviderTest extends TestCase
 {
