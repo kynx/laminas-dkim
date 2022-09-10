@@ -4,31 +4,26 @@ declare(strict_types=1);
 
 namespace KynxTest\Laminas\Dkim\Signer;
 
+use Kynx\Laminas\Dkim\Signer\Params;
 use Kynx\Laminas\Dkim\Signer\Signer;
+use KynxTest\Laminas\Dkim\PrivateKeyTrait;
 use Laminas\Mail\Message;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Part;
 use PHPMailer\DKIMValidator\Validator;
 use PHPUnit\Framework\TestCase;
 
-use function file_get_contents;
 use function str_repeat;
-use function str_replace;
-use function trim;
 
 /**
  * @coversNothing
  */
 final class SignerIntegrationTest extends TestCase
 {
-    /** @var Message */
-    private $message;
-    /** @var string */
-    private $privateKey;
-    /** @var array */
-    private $params;
-    /** @var Signer */
-    private $signer;
+    use PrivateKeyTrait;
+
+    private Message $message;
+    private Signer $signer;
 
     protected function setUp(): void
     {
@@ -42,23 +37,14 @@ final class SignerIntegrationTest extends TestCase
             ->setSubject('Subject Subject')
             ->setBody("Hello world!\r\nHello Again!\r\n");
 
-        $this->privateKey = trim(str_replace(
-            ['-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'],
-            '',
-            file_get_contents(__DIR__ . '/../assets/private_key.pem')
-        ));
-        $this->params     = [
-            'd' => 'example.com',
-            'h' => 'from:to:subject',
-            's' => '202209',
-        ];
-        $this->signer     = new Signer(['private_key' => $this->privateKey, 'params' => $this->params]);
+        $params       = new Params('example.com', ['From', 'To', 'Subject']);
+        $this->signer = new Signer($params, $this->getPrivateKey());
     }
 
     public function testSignMessageIsValid(): void
     {
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
+        $signed = $this->signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
     }
 
     public function testSignMimeMessageIsValid(): void
@@ -67,8 +53,8 @@ final class SignerIntegrationTest extends TestCase
         $mime->addPart(new Part("Hello world"));
         $this->message->setBody($mime);
 
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
+        $signed = $this->signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
     }
 
     /**
@@ -76,34 +62,35 @@ final class SignerIntegrationTest extends TestCase
      */
     public function testSignMissingHeaderIsValid(): void
     {
-        $this->signer->setParam('h', 'from:to:subject:reply-to');
+        $params = new Params('example.com', ['From', 'To', 'Subject', 'Reply-To']);
+        $signer = new Signer($params, $this->getPrivateKey());
 
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
+        $signed = $signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
     }
 
     public function testSignMessageNormalisedNewLinesIsValid(): void
     {
         $this->message->setBody("Hello world!\nHello Again!\n");
 
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
+        $signed = $this->signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
     }
 
     public function testSignMessageTrailingNewLinesIsValid(): void
     {
         $this->message->setBody("Hello world!\r\nHello Again!\r\n\r\n");
 
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
+        $signed = $this->signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
     }
 
     public function testSignMessageEmptyBodyIsValid(): void
     {
         $this->message->setBody('');
 
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
+        $signed = $this->signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
     }
 
     /**
@@ -113,8 +100,8 @@ final class SignerIntegrationTest extends TestCase
     {
         $this->message->setSubject($subject);
 
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
+        $signed = $this->signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
     }
 
     public function headerProvider(): array
@@ -123,16 +110,8 @@ final class SignerIntegrationTest extends TestCase
             'internal_whitespace' => ["Subject   Subject"],
             'leading_whitespace'  => ["   Subject Subject"],
             'trailing_whitespace' => ["Subject Subject   "],
+            'folded_header'       => [str_repeat("Subject ", 10)],
         ];
-    }
-
-    public function testSignMessageFoldedHeaderIsValid(): void
-    {
-        // 80-char subject will be wrapped at 70 chars
-        $this->message->setSubject(str_repeat("Subject ", 10));
-
-        $this->signer->signMessage($this->message);
-        self::assertSignedMessageIsValid($this->message);
     }
 
     public static function assertSignedMessageIsValid(Message $message): void
