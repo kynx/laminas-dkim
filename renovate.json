@@ -25,7 +25,7 @@
   "rangeStrategy": "replace",
   "rollbackPrs": true,
   "packageRules": [
-    {"matchDepTypes": ["require"], "rangeStrategy": "widen"},
+    {"matchDepTypes": ["require"], "rangeStrategy": "widen"}
   ],
   "vulnerabilityAlerts": {
     "rangeStrategy": "bump"
