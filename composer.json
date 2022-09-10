@@ -34,10 +34,11 @@
         "laminas/laminas-mail": "^2.16"
     },
     "require-dev": {
-        "laminas/laminas-servicemanager": "^3.4",
         "laminas/laminas-coding-standard": "^2.0",
+        "laminas/laminas-servicemanager": "^3.4",
         "phpunit/phpunit": "^9.5",
-        "phpmailer/dkimvalidator": "^0.3.0"
+        "phpmailer/dkimvalidator": "^0.3.0",
+        "vimeo/psalm": "^4.27"
     },
     "autoload": {
         "psr-4": {
@@ -53,7 +54,15 @@
         ]
     },
     "scripts": {
+        "check": [
+            "@cs-check",
+            "@static-analysis",
+            "@test"
+        ],
         "cs-check": "phpcs",
-        "cs-fix": "phpcbf"
+        "cs-fix": "phpcbf",
+        "static-analysis": "psalm --shepherd --stats",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     }
 }

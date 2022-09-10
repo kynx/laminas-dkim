@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace PHPMailer\DKIMValidator;
 
+use function file_get_contents;
+
+use const DNS_ANY;
+
 /**
  * Ugly hack to override builtin - called in `PHPMailer\DKIMValidator\Validator::fetchPublicKeys()`
  */
-function dns_get_record(string $hostname, int $type = DNS_ANY) {
+function dns_get_record(string $hostname, int $type = DNS_ANY): array
+{
     return [
         [
             'host'  => $hostname,

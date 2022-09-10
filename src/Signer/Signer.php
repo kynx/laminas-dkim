@@ -15,6 +15,7 @@ use function explode;
 use function hash;
 use function in_array;
 use function is_array;
+use function is_resource;
 use function openssl_pkey_get_private;
 use function openssl_sign;
 use function pack;
@@ -263,12 +264,13 @@ PKEY;
      */
     private function generateSignature(): string
     {
-        if (! $this->getPrivateKey()) {
+        $privateKey = $this->getPrivateKey();
+        if (! is_resource($privateKey)) {
             throw new Exception('No private key given.');
         }
 
         $signature = '';
-        openssl_sign($this->getCanonizedHeaders(), $signature, $this->getPrivateKey(), OPENSSL_ALGO_SHA256);
+        openssl_sign($this->getCanonizedHeaders(), $signature, $privateKey, OPENSSL_ALGO_SHA256);
 
         return trim(chunk_split(base64_encode($signature), 73, ' '));
     }

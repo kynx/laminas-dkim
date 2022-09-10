@@ -15,10 +15,12 @@ use PHPUnit\Framework\TestCase;
 use function file_get_contents;
 use function str_repeat;
 use function str_replace;
+use function trim;
 
 /**
- * @covers \Dkim\Signer\Signer
  * @uses \Dkim\Header\Dkim
+ *
+ * @covers \Dkim\Signer\Signer
  */
 final class SignerTest extends TestCase
 {
@@ -48,7 +50,7 @@ final class SignerTest extends TestCase
             '',
             file_get_contents(__DIR__ . '/../assets/private_key.pem')
         ));
-        $this->params = [
+        $this->params     = [
             'd' => 'example.com',
             'h' => 'from:to:subject',
             's' => '202209',

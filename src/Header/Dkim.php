@@ -18,7 +18,7 @@ class Dkim implements HeaderInterface
 
     /**
      * @param string $headerLine
-     * @return HeaderInterface|static
+     * @return static
      * @throws InvalidArgumentException
      */
     public static function fromString($headerLine)
