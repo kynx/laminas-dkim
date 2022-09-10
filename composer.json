@@ -31,7 +31,7 @@
     "require": {
         "php": "^7.4",
         "ext-openssl": "*",
-        "laminas/laminas-mail": "^2.0"
+        "laminas/laminas-mail": "^2.16"
     },
     "require-dev": {
         "laminas/laminas-servicemanager": "^3.4",
