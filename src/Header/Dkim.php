@@ -8,6 +8,9 @@ use Laminas\Mail\Header\HeaderInterface;
 
 use function strtolower;
 
+/**
+ * @see \DkimTest\Header\DkimTest
+ */
 class Dkim implements HeaderInterface
 {
     /** @var string */

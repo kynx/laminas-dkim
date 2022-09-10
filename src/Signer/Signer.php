@@ -25,6 +25,9 @@ use function trim;
 
 use const OPENSSL_ALGO_SHA256;
 
+/**
+ * @see \DkimTest\Signer\SignerTest
+ */
 class Signer
 {
     /**

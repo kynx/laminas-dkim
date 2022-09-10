@@ -2,6 +2,9 @@
 
 namespace Dkim;
 
+/**
+ * @see \DkimTest\ModuleTest
+ */
 class Module
 {
     public function getConfig(): array

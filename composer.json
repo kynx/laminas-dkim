@@ -25,21 +25,27 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         },
         "platform": {
-            "php": "7.2.99"
+            "php": "7.4.99"
         }
     },
     "require": {
-        "php": "^7.2",
+        "php": "^7.4",
         "ext-openssl": "*",
         "laminas/laminas-mail": "^2.0"
     },
     "require-dev": {
         "laminas/laminas-servicemanager": "^3.4",
-        "laminas/laminas-coding-standard": "^2.0"
+        "laminas/laminas-coding-standard": "^2.0",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
             "Dkim\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DkimTest\\": "test/"
         }
     },
     "scripts": {

@@ -5,6 +5,9 @@ namespace Dkim;
 use Dkim\Signer\Signer;
 use Dkim\Signer\SignerFactory;
 
+/**
+ * @see \DkimTest\ConfigProviderTest
+ */
 class ConfigProvider
 {
     /**
