@@ -62,6 +62,7 @@ final class Signer
     /**
      * The private key being used.
      *
+     * @psalm-suppress UndefinedDocblockClass
      * @var bool|resource|OpenSSLAsymmetricKey key
      */
     private $privateKey = false;
@@ -261,11 +262,13 @@ PKEY;
     private function generateSignature(): string
     {
         $privateKey = $this->getPrivateKey();
+        /** @psalm-suppress UndefinedClass */
         if (! (is_resource($privateKey) || $privateKey instanceof OpenSSLAsymmetricKey)) {
             throw new InvalidPrivateKeyException('No private key given.');
         }
 
         $signature = '';
+        /** @psalm-suppress PossiblyInvalidArgument */
         openssl_sign($this->getCanonizedHeaders(), $signature, $privateKey, OPENSSL_ALGO_SHA256);
 
         return trim(chunk_split(base64_encode($signature), 73, ' '));
@@ -366,6 +369,7 @@ PKEY;
     /**
      * Return OpenSSL key resource.
      *
+     * @psalm-suppress UndefinedDocblockClass
      * @return bool|resource|OpenSSLAsymmetricKey
      */
     private function getPrivateKey()
