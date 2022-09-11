@@ -57,6 +57,19 @@ final class SignerIntegrationTest extends TestCase
         self::assertSignedMessageIsValid($signed);
     }
 
+    public function testSignMimeMessageWithContentTypeIsValid(): void
+    {
+        $mime = new MimeMessage();
+        $mime->addPart(new Part("Hello world"));
+        $this->message->setBody($mime);
+
+        $params = new Params('example.com', ['From', 'To', 'Subject', 'Content-Type', 'MIME-Version']);
+        $signer = new Signer($params, $this->getPrivateKey());
+
+        $signed = $signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
+    }
+
     /**
      * @see https://www.rfc-editor.org/rfc/rfc6376.html#section-5.4
      */
