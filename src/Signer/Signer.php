@@ -2,6 +2,7 @@
 
 namespace Kynx\Laminas\Dkim\Signer;
 
+use ArrayIterator;
 use Kynx\Laminas\Dkim\Header\Dkim;
 use Kynx\Laminas\Dkim\PrivateKey\PrivateKeyInterface;
 use Laminas\Mail\Header;
@@ -16,6 +17,7 @@ use function implode;
 use function in_array;
 use function is_object;
 use function is_string;
+use function iterator_to_array;
 use function method_exists;
 use function pack;
 use function preg_replace;
@@ -122,8 +124,20 @@ final class Signer implements SignerInterface
 
         foreach ($headersToSign as $fieldName) {
             $header = $message->getHeaders()->get($fieldName);
-            if ($header instanceof Header\HeaderInterface) {
-                $canonical .= $this->getCanonicalHeader($header);
+            if ($header === false) {
+                continue;
+            }
+            if ($header instanceof ArrayIterator) {
+                $headers = iterator_to_array($header);
+            } else {
+                $headers = [$header];
+            }
+
+            /** @var Header\HeaderInterface $toSign */
+            foreach ($headers as $toSign) {
+                if ($toSign instanceof Header\HeaderInterface) {
+                    $canonical .= $this->getCanonicalHeader($toSign);
+                }
             }
         }
 
