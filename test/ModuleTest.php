@@ -21,7 +21,7 @@ final class ModuleTest extends TestCase
             'dkim'            => [
                 'params' => [
                     'domain'           => '',
-                    'canonicalization' => Params::RELAXED_SIMPLE,
+                    'canonicalization' => Params::RELAXED_RELAXED,
                     'identifier'       => '',
                 ],
             ],
