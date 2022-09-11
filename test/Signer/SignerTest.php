@@ -111,6 +111,25 @@ final class SignerTest extends TestCase
         self::assertSame($expected, $header->getFieldValue());
     }
 
+    public function testSignMessageHandlesMultipleInstancesOfHeader(): void
+    {
+        // phpcs:disable Generic.Files.LineLength.TooLong
+        $expected = 'v=1; a=rsa-sha256; bh=yGIXoM91E1DiKjvCBcC8NlWyw54TdfMQ08sdtwtOO4I=; c=relaxed/relaxed; d=example.com; h=from:content-type; s=202209; b=R+V9cP2Aitfp3E5I0KRt9tNGRQYY4oj1l2cfHTXMlw2Bv2COZ/7IIYcqKps/LrycoKxsEnkzE ZZsMU75n1KT46M37hOXCFTecpwSy+EMIm9RckWv3pPty+02LfR/rdXFIrGvS51kt89YK3OXtB VNES++u5zLXJ5Sp3xdFAMFKVA=';
+        // phpcs:enable
+
+        // mime messages add multiple Content-Type headers
+        $mime = new MimeMessage();
+        $mime->addPart(new Part("Hello world"));
+        $this->message->setBody($mime);
+
+        $params = new Params('example.com', ['From', 'Content-Type']);
+        $signer = new Signer($params, $this->privateKey);
+        $signed = $signer->signMessage($this->message);
+        $header = $signed->getHeaders()->get('dkim-signature');
+        self::assertInstanceOf(Dkim::class, $header);
+        self::assertSame($expected, $header->getFieldValue());
+    }
+
     public function testSignMessageUsesPrivateKeySelector(): void
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
