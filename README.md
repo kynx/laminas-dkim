@@ -63,8 +63,8 @@ $mail->setBody("Hello world!")
     ->setSubject('subject');
 
 // Create signer
-$privateKey = new RsaSha256('your private key');
-$params = new Params('example.com', 'sel1', ['From', 'To', 'Subject']);
+$privateKey = new RsaSha256('sel1', 'your private key');
+$params = new Params('example.com', ['From', 'To', 'Subject']);
 $signer = new Signer($params, $privateKey);
 
 // Sign message
@@ -142,13 +142,15 @@ The API has undergone a number of changes since version 1.x:
 * `Signer` now consumes a `Params` instance and a `PrivateKeyInterface`. This provides a more friendly interface to 
   DKIM's options, and will permit other signing algorithms in future (see [RFC8463]).
 * `Signer::signMessage()` now _returns_ the signed message, leaving the original unaltered.
-* The configuration files now use human-readable keys for parameters, instead of `d`, `s` and `h`.
+* The configuration files now use human-readable keys for parameters instead of `d`, `s` and `h`. The private key is 
+  now in a `keys` section which includes the `selector`. Again, this is for forward-compatibility with multiple signing
+  algorithms.
 
-### To upgrade:
+### To upgrade
 
 * Search for `use Dkim\` and replace with `use Kynx\Laminas\Dkim\`
 * Update the parameters in your configuration files to use `domain`, `selector` and `headers` instead of `d`, `s` and 
-  `h`. See [dkim.global.php.dist] for an example.
+  `h`. See [dkim.global.php.dist] and [dkim.local.php.dist] for the new format.
 * Change your code to use the signed message returned from `Signer::signMessage()`:
 
 Before (1.x):
@@ -184,3 +186,4 @@ package was forked from [joepsyko/zf-dkim], which in turn was forked from [fastn
 [5.4.1 Recommended Signature Content]: https://www.rfc-editor.org/rfc/rfc6376#section-5.4.1
 [RFC8463]: https://www.rfc-editor.org/rfc/rfc8463.html
 [dkim.global.php.dist]: ./config/dkim.global.php.dist
+[dkim.local.php.dist]: ./config/dkim.local.php.dist
