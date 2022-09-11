@@ -10,6 +10,7 @@ use Laminas\Mime\Message as MimeMessage;
 
 use function assert;
 use function base64_encode;
+use function explode;
 use function hash;
 use function implode;
 use function in_array;
@@ -27,13 +28,20 @@ use function trim;
  */
 final class Signer implements SignerInterface
 {
+    private const SIMPLE  = 'simple';
+    private const RELAXED = 'relaxed';
+
     private Params $params;
     private PrivateKeyInterface $privateKey;
+    private string $headerC13n;
+    private string $bodyC13n;
 
     public function __construct(Params $params, PrivateKeyInterface $privateKey)
     {
         $this->params     = $params;
         $this->privateKey = $privateKey;
+
+        [$this->headerC13n, $this->bodyC13n] = explode('/', $params->getCanonicalization());
     }
 
     /**
@@ -69,6 +77,9 @@ final class Signer implements SignerInterface
 
     /**
      * Returns message formatted for singing.
+     *
+     * This _replaces_ the body of the message with the generated body - so MIME content is generated. We have to do
+     * this so that the random MIME boundaries are created prior to the body hash being calculated.
      */
     private function formatMessage(Message $message): Message
     {
@@ -77,7 +88,7 @@ final class Signer implements SignerInterface
         if ($body instanceof MimeMessage) {
             $body = $body->generateMessage();
         } elseif (is_object($body)) {
-            /** @see \Laminas\Mail\Message::setBody */
+            /** @see \Laminas\Mail\Message::setBody() */
             assert(method_exists($body, '__toString'));
             $body = (string) $body;
         }
@@ -110,19 +121,31 @@ final class Signer implements SignerInterface
         }
 
         foreach ($headersToSign as $fieldName) {
-            $fieldName = strtolower($fieldName);
-            $header    = $message->getHeaders()->get($fieldName);
-
+            $header = $message->getHeaders()->get($fieldName);
             if ($header instanceof Header\HeaderInterface) {
-                $canonical .= $fieldName . ':' . trim(preg_replace(
-                    '/\s+/',
-                    ' ',
-                    $header->getFieldValue(Header\HeaderInterface::FORMAT_ENCODED)
-                )) . "\r\n";
+                $canonical .= $this->getCanonicalHeader($header);
             }
         }
 
         return trim($canonical);
+    }
+
+    /**
+     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.1 for "simple" header canonicalization
+     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.2 for "relaxed" header canonicalization
+     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.5 for slightly convoluted examples
+     */
+    private function getCanonicalHeader(Header\HeaderInterface $header): string
+    {
+        if ($this->headerC13n === self::SIMPLE) {
+            return $header->toString() . "\r\n";
+        }
+
+        return strtolower($header->getFieldName()) . ':' . trim(preg_replace(
+            '/\s+/',
+            ' ',
+            $header->getFieldValue(Header\HeaderInterface::FORMAT_ENCODED)
+        )) . "\r\n";
     }
 
     /**
@@ -185,11 +208,23 @@ final class Signer implements SignerInterface
 
     /**
      * Get Message body (sha256) hash.
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.3 for "simple" body canonicalization
+     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.4 for "relaxed" body canonicalization
+     * @see https://www.rfc-editor.org/rfc/rfc6376#section-3.4.5 for slightly convoluted examples
      */
     private function getBodyHash(Message $message): string
     {
         $body = $message->getBody();
         assert(is_string($body));
+
+        if ($this->bodyC13n === self::RELAXED) {
+            // Ignore all whitespace at the end of lines.  Implementations MUST NOT remove the CRLF at the end of line.
+            $body = preg_replace('/\h+(\R)/', '$1', $body);
+            // Reduce all sequences of WSP within a line to a single SP character.
+            $body = preg_replace('/\h+/', ' ', $body);
+        }
+
         return base64_encode(pack("H*", hash('sha256', $body)));
     }
 }
