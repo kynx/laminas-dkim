@@ -33,10 +33,9 @@ final class ParamsTest extends TestCase
 
         $params = new Params('example.com');
         self::assertSame($expectedHeaders, $params->getHeaders());
-        self::assertSame(Params::RELAXED_SIMPLE, $params->getCanonicalization());
+        self::assertSame(Params::RELAXED_RELAXED, $params->getCanonicalization());
         self::assertSame('', $params->getIdentifier());
         self::assertSame(1, $params->getVersion());
-        self::assertSame('rsa-sha256', $params->getAlgorithm());
     }
 
     public function testConstructorAddsFromToHeaders(): void
@@ -55,7 +54,7 @@ final class ParamsTest extends TestCase
     public function testConstructorInvalidCanonicalizationThrowsException(): void
     {
         self::expectException(InvalidParamException::class);
-        self::expectExceptionMessage("Only 'relaxed/simple' canonicalization supported");
-        new Params('example.com', ['from'], Params::RELAXED_RELAXED);
+        self::expectExceptionMessage("Invalid canonicalization 'relaxed/typo'");
+        new Params('example.com', ['from'], 'relaxed/typo');
     }
 }
