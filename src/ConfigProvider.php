@@ -28,6 +28,16 @@ final class ConfigProvider
         return [
             'params' => [
                 'domain'           => '', // _must_ be set in config.local.php
+                'headers'          => [
+                    'CC',
+                    'Content-Type',
+                    'Date',
+                    'From',
+                    'MIME-Version',
+                    'Reply-To',
+                    'Subject',
+                    'To',
+                ],
                 'canonicalization' => 'relaxed/relaxed',
                 'identifier'       => '',
             ],

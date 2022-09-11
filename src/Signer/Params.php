@@ -21,7 +21,16 @@ final class Params
     public const RELAXED_RELAXED         = 'relaxed/relaxed';
     public const SIMPLE_SIMPLE           = 'simple/simple';
     public const SIMPLE_RELAXED          = 'simple/relaxed';
-    private const DEFAULT_HEADERS        = ['Date', 'From', 'Reply-To', 'Sender', 'Subject'];
+    private const DEFAULT_HEADERS        = [
+        'CC',
+        'Content-Type',
+        'Date',
+        'From',
+        'MIME-Version',
+        'Reply-To',
+        'Subject',
+        'To',
+    ];
     private const VALID_CANONICALIZATION = [
         self::RELAXED_SIMPLE,
         self::RELAXED_RELAXED,

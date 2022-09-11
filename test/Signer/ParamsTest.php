@@ -29,7 +29,7 @@ final class ParamsTest extends TestCase
 
     public function testConstructorSetsDefaults(): void
     {
-        $expectedHeaders = ['date', 'from', 'reply-to', 'sender', 'subject'];
+        $expectedHeaders = ['cc', 'content-type', 'date', 'from', 'mime-version', 'reply-to', 'subject', 'to'];
 
         $params = new Params('example.com');
         self::assertSame($expectedHeaders, $params->getHeaders());

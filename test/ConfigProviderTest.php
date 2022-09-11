@@ -21,6 +21,16 @@ final class ConfigProviderTest extends TestCase
             'dkim'         => [
                 'params' => [
                     'domain'           => '',
+                    'headers'          => [
+                        'CC',
+                        'Content-Type',
+                        'Date',
+                        'From',
+                        'MIME-Version',
+                        'Reply-To',
+                        'Subject',
+                        'To',
+                    ],
                     'canonicalization' => Params::RELAXED_RELAXED,
                     'identifier'       => '',
                 ],
