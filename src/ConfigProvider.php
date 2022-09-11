@@ -28,7 +28,7 @@ final class ConfigProvider
         return [
             'params' => [
                 'domain'           => '', // _must_ be set in config.local.php
-                'canonicalization' => 'relaxed/simple',
+                'canonicalization' => 'relaxed/relaxed',
                 'identifier'       => '',
             ],
         ];

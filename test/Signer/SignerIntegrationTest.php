@@ -93,14 +93,46 @@ final class SignerIntegrationTest extends TestCase
         self::assertSignedMessageIsValid($signed);
     }
 
+    public function testSignMessageRelaxedBodyIsValid(): void
+    {
+        $params = new Params('example.com', ['From', 'To', 'Subject'], Params::RELAXED_RELAXED);
+        $signer = new Signer($params, $this->getPrivateKey());
+
+        $this->message->setBody("Hello world!\t \r\nHello \t Again!\r\n\r\n");
+
+        $signed = $signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
+    }
+
     /**
      * @dataProvider headerProvider
      */
-    public function testSignMessageCanonicalHeaderIsValid(string $subject): void
+    public function testSignMessageRelaxedHeaderIsValid(string $subject): void
     {
         $this->message->setSubject($subject);
 
         $signed = $this->signer->signMessage($this->message);
+        self::assertSignedMessageIsValid($signed);
+    }
+
+    /**
+     * @dataProvider headerProvider
+     */
+    public function testSignMessageSimpleHeaderIsValid(string $subject): void
+    {
+        if ($subject === "   Subject Subject") {
+            self::markTestSkipped("See https://github.com/PHPMailer/DKIMValidator/issues/14");
+        }
+        if ($subject === str_repeat("Subject ", 10)) {
+            self::markTestSkipped("See https://github.com/PHPMailer/DKIMValidator/issues/15");
+        }
+
+        $params = new Params('example.com', ['From', 'To', 'Subject'], Params::SIMPLE_SIMPLE);
+        $signer = new Signer($params, $this->getPrivateKey());
+
+        $this->message->setSubject($subject);
+
+        $signed = $signer->signMessage($this->message);
         self::assertSignedMessageIsValid($signed);
     }
 

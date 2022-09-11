@@ -48,7 +48,7 @@ final class SignerTest extends TestCase
         $this->message->setBody("Hello world!\r\nHello Again!\r\n");
 
         $this->privateKey = $this->getPrivateKey();
-        $this->params     = new Params('example.com', ['From', 'To', 'Subject']);
+        $this->params     = new Params('example.com', ['From', 'To', 'Subject'], Params::RELAXED_SIMPLE);
     }
 
     public function testConstructorSetsPrivateKeyAndParams(): void
@@ -179,9 +179,9 @@ final class SignerTest extends TestCase
     }
 
     /**
-     * @dataProvider headerProvider
+     * @dataProvider relaxedHeaderProvider
      */
-    public function testSignMessageCanonicalizesHeaders(string $subject): void
+    public function testSignMessageCanonicalizesRelaxedHeaders(string $subject, string $expected): void
     {
         $this->message->setSubject($subject);
 
@@ -189,32 +189,72 @@ final class SignerTest extends TestCase
         $signed = $signer->signMessage($this->message);
         $header = $signed->getHeaders()->get('dkim-signature');
         self::assertInstanceOf(Dkim::class, $header);
-        self::assertSame(self::DEFALT_DKIM, $header->getFieldValue());
+        self::assertSame($expected, $header->getFieldValue());
     }
 
-    public function headerProvider(): array
-    {
-        return [
-            'internal_whitespace' => ["Subject   Subject"],
-            'leading_whitespace'  => ["   Subject Subject"],
-            'trailing_whitespace' => ["Subject Subject   "],
-        ];
-    }
-
-    public function testSignMessagesCanonicalizesFoldedHeader(): void
+    public function relaxedHeaderProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
-        $expected = 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/simple; d=example.com; h=from:to:subject; s=202209; b=ltIZz2CnS0EXyfNfjbCLZx58um55Uq2SvHUj3VCBrF/MH5CVRQQy7/CxcL260k6ddodOaRKjw QLW9kRWD/CuXz9AWpjYQbDg5qPNVsFHcNzKPJHIbytpYktC6e55nealcY/qpK7mcociop3S/S xzPHrhJtKI8ZaqQLFd+0x2P6s=';
+        return [
+            'internal_whitespace' => ["Subject   Subject", self::DEFALT_DKIM],
+            'leading_whitespace'  => ["   Subject Subject", self::DEFALT_DKIM],
+            'trailing_whitespace' => ["Subject Subject   ", self::DEFALT_DKIM],
+            'folded'              => [str_repeat("Subject ", 10), 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/simple; d=example.com; h=from:to:subject; s=202209; b=ltIZz2CnS0EXyfNfjbCLZx58um55Uq2SvHUj3VCBrF/MH5CVRQQy7/CxcL260k6ddodOaRKjw QLW9kRWD/CuXz9AWpjYQbDg5qPNVsFHcNzKPJHIbytpYktC6e55nealcY/qpK7mcociop3S/S xzPHrhJtKI8ZaqQLFd+0x2P6s='],
+        ];
         // phpcs:enable
+    }
 
-        // 80-char subject will be wrapped at 70 chars
-        $this->message->setSubject(str_repeat("Subject ", 10));
+    /**
+     * @dataProvider simpleHeaderProvider
+     */
+    public function testSignMessageCanonicalizesSimpleHeaders(string $subject, string $expected): void
+    {
+        $this->message->setSubject($subject);
 
-        $signer = new Signer($this->params, $this->privateKey);
+        $params = new Params('example.com', ['From', 'To', 'Subject'], Params::SIMPLE_SIMPLE);
+        $signer = new Signer($params, $this->privateKey);
         $signed = $signer->signMessage($this->message);
         $header = $signed->getHeaders()->get('dkim-signature');
         self::assertInstanceOf(Dkim::class, $header);
         self::assertSame($expected, $header->getFieldValue());
+    }
+
+    public function simpleHeaderProvider(): array
+    {
+        // phpcs:disable Generic.Files.LineLength.TooLong
+        return [
+            'internal_whitespace' => ["Subject   Subject", 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=simple/simple; d=example.com; h=from:to:subject; s=202209; b=IPsYUdxzSYswkKNzCXYtro/fj5L5T0pMUApS03Lozn+5B/Q7nqUNqORALhezKKzBpBvPtEIKT kClLY14snlfBqzByjTpIaZiXRMRI55up5gQpbzRoBYZ/zS+/ymxctECJrXBT77aVGRw9iT5G/ Qs0+YkJ9cV42wTQ1bHZdaBgvc='],
+            'leading_whitespace'  => ["   Subject Subject", 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=simple/simple; d=example.com; h=from:to:subject; s=202209; b=oLtXtjVDtf2Y2gGh+wg+nlakOk1vOJpfW1ZEX03fqoG3JcKZq0+aVU3X737houNqy7rDPIBwD pN/8BIh8tc2vVhhqt+7gIFDLTX8gDdAD4NXiBmdtmWdCqZiPfk6ykvyWAs7UW34LoW1L2VIIB cFzwvO2O8nOznqp+flifHs+HU='],
+            'trailing_whitespace' => ["Subject Subject   ", 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=simple/simple; d=example.com; h=from:to:subject; s=202209; b=WLobi8YcsBmCCMyv6+cYilg+fyEr9ySuV36p+xNOSsSj44iEbyqRdxADdUf9r9ZW2qcmeKmJI ZxH83IrQzcq5RbuDO8yDzyVrhnexDBntIekcIFnUHcAepfTtFbOcZLDDBKQ64WLALYp+A8m8h ES60RUf67s5MuIPX6HVyiry+Y='],
+            'folded'              => [str_repeat("Subject ", 10), 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=simple/simple; d=example.com; h=from:to:subject; s=202209; b=R0+f5mKPNL6AWK2ZewBGUgIG1poDdaQDvm508UWJ8NlyZ3Og6G9LDmcy590UH9FFJkWMPmn/r nIZXDzZga5VfiCvN/fAyB4UKpUdeAdeFTpetsCtjFWPrPwH4IU3dv1cawOB5S+SrF1wKI3pv6 zTfZIjWrw1aucH7jv0H+T+PTQ='],
+        ];
+        // phpcs:enable
+    }
+
+    /**
+     * @dataProvider relaxedBodyProvider
+     */
+    public function testSignMessageCanonicalizesRelaxedBody(string $body, string $expected): void
+    {
+        $this->message->setBody($body);
+
+        $params = new Params('example.com', ['From', 'To', 'Subject'], Params::RELAXED_RELAXED);
+        $signer = new Signer($params, $this->privateKey);
+        $signed = $signer->signMessage($this->message);
+        $header = $signed->getHeaders()->get('dkim-signature');
+        self::assertInstanceOf(Dkim::class, $header);
+        self::assertSame($expected, $header->getFieldValue());
+    }
+
+    public function relaxedBodyProvider(): array
+    {
+        // phpcs:disable Generic.Files.LineLength.TooLong
+        return [
+            'trailing_whitespace' => ["Hello world!\t \r\nHello Again!\t\r\n", 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/relaxed; d=example.com; h=from:to:subject; s=202209; b=cq1/xMyvfO9DCLDiAqiaGoEMB4/uF/gSAFJTbF817BvU4HOIb927wp0n7JGyNueplJ4Xn4mph jegAZUJ4OpBNiSocoiFvQgOc+8VjUCvM1fY5mdA8yIDaO2PPRFyV5vUC+TMLXKE61WMo9oeDY F6QfV+Z/gjurDixavjzuJRlQw='],
+            'internal_whitespace' => ["Hello   world!\r\nHello\tAgain!\r\n", 'v=1; a=rsa-sha256; bh=36+kqoyJsuwP2NJR3Fl95HuripBg2zfO++jH/8Df2LM=; c=relaxed/relaxed; d=example.com; h=from:to:subject; s=202209; b=cq1/xMyvfO9DCLDiAqiaGoEMB4/uF/gSAFJTbF817BvU4HOIb927wp0n7JGyNueplJ4Xn4mph jegAZUJ4OpBNiSocoiFvQgOc+8VjUCvM1fY5mdA8yIDaO2PPRFyV5vUC+TMLXKE61WMo9oeDY F6QfV+Z/gjurDixavjzuJRlQw='],
+            'leading_whitespace'  => ["  Hello world!\r\n\tHello Again!\r\n", 'v=1; a=rsa-sha256; bh=iDX6opI62a3dmWll1MM28pYWgMwrHbc2N1I3kGKFHUw=; c=relaxed/relaxed; d=example.com; h=from:to:subject; s=202209; b=XAtmslwuOzNPNdpHZZvrpW8Ej4npR1F39dyMMafm1PoxOkg/yKp6m1frui5SL7an4bx3BUjt9 ouYTQkcqLNX+P+38CppPWmcLLocsf6/Hl8CJyZuELuT1SWVMDpjmQHalhL/RkgwdXJ+ROw7Yu Bu7Pdze6MGU0FeRmtdC59ngg8='],
+        ];
+        // phpcs:enable
     }
 
     public function testSignMultipleMessages(): void
