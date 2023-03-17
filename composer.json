@@ -42,7 +42,7 @@
     "require-dev": {
         "laminas/laminas-coding-standard": "^2.0",
         "laminas/laminas-servicemanager": "^3.4",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^10.0",
         "phpmailer/dkimvalidator": "dev-master as 0.4.0",
         "vimeo/psalm": "^4.27"
     },
